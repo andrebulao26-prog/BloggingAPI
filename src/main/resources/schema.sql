@@ -5,5 +5,6 @@ CREATE TABLE posts (
     title VARCHAR(255),
     content VARCHAR(255),
     category VARCHAR(255),
-    tags VARCHAR(255)
+    tags VARCHAR(255),
+    createdAt VARCHAR(255)
 );

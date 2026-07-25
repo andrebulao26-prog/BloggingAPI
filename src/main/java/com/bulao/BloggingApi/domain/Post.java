@@ -11,20 +11,6 @@ public class Post {
     private String title;
     private String content;
     private String category;
-    private String[] tags;
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public Post(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public void Create () {
-
-        jdbcTemplate.update("INSERT INTO posts (title, content, category, tags) VALUES (?, ?, ?, ?)",
-            this.title, this.content, this.category, this.tags
-        );
-
-    }
+    private String[] tagss;
 
 }

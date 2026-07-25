@@ -1,7 +1,11 @@
 package com.bulao.BloggingApi.controller;
 
+import com.bulao.BloggingApi.dao.PostDao;
+import com.bulao.BloggingApi.domain.Post;
+import com.bulao.BloggingApi.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -13,56 +17,15 @@ import java.util.Map;
 @RequestMapping("/posts")
 public class BloggingController {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final PostService postService;
 
-    String[] RequiredKeys = {"title","content","category","tags"};
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public BloggingController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public BloggingController(PostService postService) {
+        this.postService = postService;
     }
 
     @PostMapping
-    public Map<String, Object> createPost(@RequestBody String body) {
-
-        Map<String, Object> status = new HashMap<>();
-        status.put("Status", "400 Bad Request");
-
-        JsonNode rootNode = objectMapper.readTree(body);
-
-        if (rootNode.isEmpty()) {
-            return status;
-        }
-        for (String keyName : RequiredKeys) {
-            if (rootNode.findValue(keyName) == null) {
-                return status;
-            }
-        }
-
-        String title = rootNode.path("title").asString();
-        String content = rootNode.path("content").asString();
-        String category = rootNode.path("category").asString();
-        JsonNode tagsPath = rootNode.path("tags");
-
-        String Tags = "{";
-
-        for (JsonNode tag : tagsPath) {
-            Tags = Tags + "\"" + tag.asString() + "\",";
-        }
-        Tags = Tags.substring(0,Tags.length()-1) + "}";
-
-        System.out.println(Tags);
-
-        jdbcTemplate.update("INSERT INTO posts (title, content, category, tags) VALUES (?, ?, ?, ?)",
-                title, content, category, Tags
-        );
-
-        status.replace("Status", "201 Created");
-
-        return status;
-
+    public ResponseEntity<Map<String, Object>> createPost(@RequestBody String body) {
+        return postService.createPost(body);
     }
 
     @PutMapping("/{id}")
