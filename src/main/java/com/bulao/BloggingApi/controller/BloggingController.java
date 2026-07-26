@@ -28,16 +28,14 @@ public class BloggingController {
         return postService.createPost(body);
     }
 
-    @PutMapping("/{id}")
-    public Map<String, Object> updatePost(@PathVariable Integer id) {
-        Map<String, Object> status = new HashMap<>();
-        return status;
-    }
+    //@PutMapping("/{id}")
+    //public ResponseEntity<Map<String, Object>> updatePost(@PathVariable Integer id, @RequestBody String body) {
+        //return postService.deletePost(id);
+    //}
 
     @DeleteMapping("/{id}")
-    public Map<String, Object> deletePost(@PathVariable Integer id) {
-        Map<String, Object> status = new HashMap<>();
-        return status;
+    public ResponseEntity<Map<String, Object>> deletePost(@PathVariable Integer id) {
+        return postService.deletePost(id);
     }
 
     @GetMapping("/{id}")

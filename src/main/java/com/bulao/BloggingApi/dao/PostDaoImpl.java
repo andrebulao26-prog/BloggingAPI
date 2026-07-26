@@ -14,9 +14,28 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public String newPost(String title, String content, String category, String Tags, String createdAt) {
-        return jdbcTemplate.queryForObject("INSERT INTO posts (title, content, category, tags, createdAt) VALUES (?, ?, ?, ?, ?) RETURNING id",String.class,title,content,category,Tags,createdAt);
+    public String newPost(String title, String content, String category, String Tags, String createdAt, String updatedAt) {
+        return jdbcTemplate.queryForObject("INSERT INTO posts (title, content, category, tags, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",String.class,title,content,category,Tags,createdAt, updatedAt);
+    }
 
+    @Override
+    public boolean deletePost(Integer id) {
+        if (jdbcTemplate.queryForObject("SELECT EXISTS(SELECT 1 FROM posts WHERE id="+id+")",String.class).equals("t")) {
+            jdbcTemplate.update("DELETE FROM posts WHERE id="+id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String updatePost(Integer id,String title , String content, String category, String Tags, String updatedAt) {
+
+        String query = "UPDATE posts\n";
+        query = query + "WHERE id"+id+"\n";
+        query = query + "RETURNING id";
+
+        return jdbcTemplate.queryForObject("",String.class);
     }
 
 }

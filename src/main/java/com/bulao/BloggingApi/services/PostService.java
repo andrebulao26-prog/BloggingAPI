@@ -62,13 +62,63 @@ public class PostService {
         returnJson.put("category",category);
         returnJson.put("tags",Tags);
         returnJson.put("createdAt",createdAt);
+        returnJson.put("updatedAt",createdAt);
 
-        String newID = postDao.newPost(title,content,category,Tags,createdAt);
+        String newID = postDao.newPost(title,content,category,Tags,createdAt,createdAt);
 
         returnJson.put("id",newID);
 
         return ResponseEntity.status(HttpStatus.OK).body(returnJson);
 
     }
+
+    public ResponseEntity<Map<String, Object>> updatePost(Integer id, String body) {
+
+        Map<String, Object> returnJson = new HashMap<>();
+
+        JsonNode rootNode = objectMapper.readTree(body);
+
+        if (rootNode.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(returnJson);
+        }
+
+        String title = rootNode.path("title").asString();
+        String content = rootNode.path("content").asString();
+        String category = rootNode.path("category").asString();
+        JsonNode tagsPath = rootNode.path("tags");
+
+        String updatedAt = String.valueOf(LocalDateTime.now());
+
+        String Tags = "[";
+
+        for (JsonNode tag : tagsPath) {
+            Tags = Tags + '"' + tag.asString() + '"' + ",";
+        }
+        Tags = Tags.substring(0,Tags.length()-1) + "]";
+
+        returnJson.put("title", title);
+        returnJson.put("content",content);
+        returnJson.put("category",category);
+        returnJson.put("tags",Tags);
+        returnJson.put("updatedAt",updatedAt);
+
+        String newID = postDao.updatePost(id,title,content,category,Tags,updatedAt);
+
+        returnJson.put("id",newID);
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnJson);
+
+    }
+
+    public ResponseEntity<Map<String, Object>> deletePost(Integer id) {
+
+        if (postDao.deletePost(id) == true) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new HashMap<>());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>());
+        }
+    }
+
+
 
 }
