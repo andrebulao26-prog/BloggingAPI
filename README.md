@@ -41,4 +41,4 @@ Get Blog Posts with a term (Will only return posts with the term found in the ti
 ```
 GET /posts/?term=[term]
 ```
-https://roadmap.sh/projects/blogging-platform-api
+[https://roadmap.sh/projects/blogging-platform-api](https://roadmap.sh/projects/blogging-platform-api)
