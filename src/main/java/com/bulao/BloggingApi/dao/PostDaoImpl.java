@@ -56,7 +56,7 @@ public class PostDaoImpl implements PostDao {
 
                 String[] keys = {"title","content","category","tags"};
                 for (String key : keys) {
-                    if ( ((String) row.get(key)).contains(term) ) {
+                    if ( ((String) row.get(key)).toLowerCase().contains(term) ) {
                         filtered_row.add(row);
                         break;
                     }
