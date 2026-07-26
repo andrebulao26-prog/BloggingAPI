@@ -4,6 +4,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Repository
 public class PostDaoImpl implements PostDao {
 
@@ -35,6 +41,36 @@ public class PostDaoImpl implements PostDao {
 
         return jdbcTemplate.queryForObject(query,String.class);
     }
+
+    @Override
+    public List<Map<String, Object>> getPost (String term) {
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList("SELECT * FROM posts");
+
+        if (!term.equals("")) {
+
+            List<Map<String, Object>> filtered_row = new ArrayList<>();
+
+            //System.out.println("Searching for term: " + term);
+            for (Map<String, Object> row : rows) {
+
+                String[] keys = {"title","content","category","tags"};
+                for (String key : keys) {
+                    if ( ((String) row.get(key)).contains(term) ) {
+                        filtered_row.add(row);
+                        break;
+                    }
+                }
+
+            }
+
+            rows = filtered_row;
+
+        }
+
+        return rows;
+
+    };
 
     @Override
     public boolean postExists(Integer id) {

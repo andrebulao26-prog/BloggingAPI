@@ -12,6 +12,7 @@ import tools.jackson.databind.node.ObjectNode;
 import javax.swing.text.html.parser.Entity;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -130,6 +131,12 @@ public class PostService {
         }
     }
 
+    public ResponseEntity<List<Map<String, Object>>> getPost(String term) {
 
+        List<Map<String, Object>> rows = postDao.getPost(term);
+
+        return ResponseEntity.status(HttpStatus.OK).body(rows);
+
+    }
 
 }

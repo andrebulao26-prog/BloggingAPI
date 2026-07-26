@@ -11,6 +11,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,13 +39,14 @@ public class BloggingController {
         return postService.deletePost(id);
     }
 
-    @GetMapping("/{id}")
-    public Map<String, Object> getPost(
-            @PathVariable Integer id,
-            @RequestParam(required = false) String term) {
+    @GetMapping()
+    public ResponseEntity<List<Map<String, Object>>> getPost(@RequestParam(required = false) String term) {
 
-        Map<String, Object> status = new HashMap<>();
-        return status;
+        if (term==null) {
+            term = "";
+        }
+
+        return postService.getPost(term);
 
     }
 
