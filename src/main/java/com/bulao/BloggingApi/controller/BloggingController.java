@@ -28,10 +28,10 @@ public class BloggingController {
         return postService.createPost(body);
     }
 
-    //@PutMapping("/{id}")
-    //public ResponseEntity<Map<String, Object>> updatePost(@PathVariable Integer id, @RequestBody String body) {
-        //return postService.deletePost(id);
-    //}
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updatePost(@PathVariable Integer id, @RequestBody String body) {
+        return postService.updatePost(id,body);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deletePost(@PathVariable Integer id) {

@@ -74,12 +74,22 @@ public class PostService {
 
     public ResponseEntity<Map<String, Object>> updatePost(Integer id, String body) {
 
+        if (postDao.postExists(id) == false) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>());
+        }
+
+        String[] RequiredKeys = {"title","content","category","tags"};
         Map<String, Object> returnJson = new HashMap<>();
 
         JsonNode rootNode = objectMapper.readTree(body);
 
         if (rootNode.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(returnJson);
+        }
+        for (String keyName : RequiredKeys) {
+            if (rootNode.findValue(keyName) == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(returnJson);
+            }
         }
 
         String title = rootNode.path("title").asString();
@@ -96,23 +106,24 @@ public class PostService {
         }
         Tags = Tags.substring(0,Tags.length()-1) + "]";
 
+        returnJson.put("id",id);
         returnJson.put("title", title);
         returnJson.put("content",content);
         returnJson.put("category",category);
         returnJson.put("tags",Tags);
         returnJson.put("updatedAt",updatedAt);
 
-        String newID = postDao.updatePost(id,title,content,category,Tags,updatedAt);
+        String createdAt = postDao.updatePost(id,title,content,category,Tags,updatedAt);
 
-        returnJson.put("id",newID);
+        returnJson.put("createdAt",createdAt);
 
         return ResponseEntity.status(HttpStatus.OK).body(returnJson);
 
     }
 
     public ResponseEntity<Map<String, Object>> deletePost(Integer id) {
-
-        if (postDao.deletePost(id) == true) {
+        if (postDao.postExists(id) == true) {
+            postDao.deletePost(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new HashMap<>());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>());

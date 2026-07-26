@@ -19,23 +19,30 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public boolean deletePost(Integer id) {
-        if (jdbcTemplate.queryForObject("SELECT EXISTS(SELECT 1 FROM posts WHERE id="+id+")",String.class).equals("t")) {
-            jdbcTemplate.update("DELETE FROM posts WHERE id="+id);
-            return true;
-        } else {
-            return false;
-        }
+    public void deletePost(Integer id) {
+        jdbcTemplate.update("DELETE FROM posts WHERE id="+id);
     }
 
     @Override
     public String updatePost(Integer id,String title , String content, String category, String Tags, String updatedAt) {
 
         String query = "UPDATE posts\n";
-        query = query + "WHERE id"+id+"\n";
-        query = query + "RETURNING id";
 
-        return jdbcTemplate.queryForObject("",String.class);
+        query = query + "SET title = \'"+title+"\', " + "content = \'"+content+"\', " + "category = \'"+category+"\', " + "tags = \'"+Tags+"\', " + "updatedAt = \'"+updatedAt+"\'\n";
+
+        query = query + "WHERE id ="+id+"\n";
+        query = query + "RETURNING createdAt";
+
+        return jdbcTemplate.queryForObject(query,String.class);
+    }
+
+    @Override
+    public boolean postExists(Integer id) {
+        if (jdbcTemplate.queryForObject("SELECT EXISTS(SELECT 1 FROM posts WHERE id="+id+")",String.class).equals("t")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
